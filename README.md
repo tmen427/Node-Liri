@@ -2,7 +2,7 @@
 
 *accidently named liri.js as siri.js didn't want to change it because I don't know know if it will affect the other files...
 
-
+For this project we used node.js and imported certain modules like axios and Spotify to in order to make API calls in order to return certain information....
 
 ![alt text](/images/screen1.png)
 Using movie-this function to return information about a chosen movie
