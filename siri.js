@@ -8,23 +8,18 @@ var moment = require('moment');
 //  A function that uses the ombdapi API (You do not need to pass in a parameter that is just for the dowhatissays function below)
 function moviethis (parameter) {
 var movie = "";
-// next time do this process.argv.slice(3).join(" ") so that you you dont have to do all the if and else if statements below
+
 
 if (parameter) {
     movie = parameter; 
 }
-else if (process.argv[3]) {
-    movie = process.argv[3];
-}      
-else if (process.argv[3] && process.argv[4]) {
-    movie = process.argv[3] + " " + process.argv[4]; 
+else if ( process.argv.slice(3).join(" ") ) {           //slices the process.argv after the second spot and rejoins as a string
+    movie =  process.argv.slice(3).join(" "); 
 }
-else if (process.argv[3] && process.argv[4] && process.argv[5]) {
-    movie = process.argv[3] + " " + process.argv[4] + " " + process.argv[5]; 
-}
-else if (parameter === undefined && process.argv[3] === undefined) {
+else if (! process.argv.slice(3).join(" "))  {        // the defalut movie
     movie = "Mr.Nobody";
 }
+
 var queryUrl = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
 axios.get(queryUrl).then(
     
@@ -37,24 +32,28 @@ axios.get(queryUrl).then(
       console.log("Language: " + response.data.Language);
       console.log("Plot: " + response.data.Plot);
       console.log("Actors: " + response.data.Actors);
-      }
-    );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+   
+
+    
 }
 
 // A function that uses the bandsintown API. 
 function concertthis (parameter) {
 var artist = "";
-if (parameter) {            //Either use a paramter or process.argv to get user input
+if (parameter) {            //Either use a paramater or process.argv to get user input
     artist = parameter;
 }    
-else if (process.argv[3]) {
-    artist = process.argv[3]; }
-else if (process.argv[3] && process.argv[4]) {
-    artist = process.argv[3] + process.argv[4];
+else if ( process.argv.slice(3).join(" ") ) {
+    artist =  process.argv.slice(3).join(" "); 
 }
 
 var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-axios.get(queryUrl).then(
+axios.get(queryUrl)
+    .then(
     function(response) {
         console.log(response.data[0].venue.name);
         console.log(response.data[0].venue.city + ", " + response.data[0].venue.region);
@@ -62,9 +61,11 @@ axios.get(queryUrl).then(
        
         var responseTime = response.data[0].datetime;
         console.log(moment(responseTime).format('MM/DD/YYYY') );
-    }
-    
-)
+    })
+    .catch(function (error) {
+        console.log('Cannot find that artist!');
+      });
+
 }
 
 // A function that uses the Spotify API (You do not need to pass in a parameter)
@@ -78,23 +79,15 @@ function spotifythissong (parameter) {
     if (parameter) {
         songname = parameter; 
     }
-    
-    else if  (process.argv[3]) {
-        songname = process.argv[3];
-    }
-    else if (process.argv[3] && process.argv[4]) {
-        songname = process.argv[3] + " " + process.argv[4]; 
-    }
-    else if (process.argv[3] && process.argv[4] && process.argv[5]) {
-        songname = process.argv[3] + " " + process.argv[4] + " " + process.argv[5]; 
-    }
-    else if (process.argv[3] && process.argv[4] && process.argv[5] && process.argv[6])  {
-        songname = process.argv[3] + " " + process.argv[4] + " " + process.argv[5] + " " + process.argv[6]; 
+    else if (process.argv.slice(3).join(" ") ) {
+        songname = process.argv.slice(3).join(" "); 
     }
     // if there is not parameter passed in and no process.argv then "The sign" is the default song
-    else if (parameter === undefined && process.argv[3] === undefined) {
-        songname = "The Sign";   //you may have to manually search for the ace of base object here....
+    
+    else if (parameter === undefined && !process.argv.slice(3).join(" ") ) {
+        songname = "The Sign";   
     }
+    
     //console.log(songname);
     spotify
     .search({ type: 'track', query: songname, limit: 1 })
